@@ -1,6 +1,5 @@
 package com.example.pokedex
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -10,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.adapter.PokemonAdapter
 import com.example.pokedex.network.RetrofitClient
 import kotlinx.coroutines.launch
 
