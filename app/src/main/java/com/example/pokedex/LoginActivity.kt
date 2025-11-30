@@ -59,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     sessionManager.saveUserSession(login)
 
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
