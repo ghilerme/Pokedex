@@ -12,10 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pokedex">
         <activity
-            android:name=".CadastroActivity"
+            android:name=".SplashActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CadastroActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
