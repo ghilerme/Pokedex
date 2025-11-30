@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_cadastrar"
+        android:title="Cadastrar Pokémon"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_listar"
+        android:title="Listar Todos"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_pesquisar_tipo"
+        android:title="Pesquisar por Tipo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_pesquisar_habilidade"
+        android:title="Pesquisar por Habilidade"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sair"
+        android:title="Sair"
+        app:showAsAction="never" />
+</menu>
