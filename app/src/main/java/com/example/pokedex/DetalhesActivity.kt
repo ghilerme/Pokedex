@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.network.RetrofitClient
+import com.example.pokedex.util.SessionManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
@@ -85,7 +86,6 @@ class DetalhesActivity : AppCompatActivity() {
         preencherCampos(nome, tipo, habilidades, usuarioOriginal)
 
         // DEFININDO IMAGEM PADRÃO LOCAL (SEM URL EXTERNA)
-        // Como a API ainda está em construção, usamos o logo do app
         ivPokemon.setImageResource(R.drawable.logo_pokemon)
     }
 
@@ -143,6 +143,7 @@ class DetalhesActivity : AppCompatActivity() {
 
         val habilidadesString = novasHabilidades.joinToString(", ")
 
+        // Cria o objeto para envio
         val pokemonAtualizado = Pokemon(
             id = pokemonId,
             nome = nome,
@@ -151,13 +152,26 @@ class DetalhesActivity : AppCompatActivity() {
             usuario_cadastro = usuarioOriginal
         )
 
+        val sessionManager = SessionManager(this)
+        val token = sessionManager.getToken()
+        
+        if (token == null) {
+            Toast.makeText(this, "Erro de autenticação", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         progressBar.visibility = View.VISIBLE
         btnSalvar.isEnabled = false
 
         lifecycleScope.launch {
             try {
-                // Mantém a comunicação com a API para salvar os dados
-                val response = RetrofitClient.api.updatePokemon(pokemonId, pokemonAtualizado)
+                // CORREÇÃO: Passando Token e convertendo ID para String
+                val response = RetrofitClient.api.updatePokemon(
+                    "Bearer $token", 
+                    pokemonId.toString(), 
+                    pokemonAtualizado
+                )
+                
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesActivity, "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
                     finish()
@@ -183,12 +197,23 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     private fun deletarPokemon() {
+        // Mesma lógica para o delete
+        val sessionManager = SessionManager(this)
+        val token = sessionManager.getToken()
+
+        if (token == null) {
+            Toast.makeText(this, "Erro de autenticação", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         progressBar.visibility = View.VISIBLE
         btnExcluir.isEnabled = false
 
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.api.deletePokemon(pokemonId)
+                // CORREÇÃO: Passando Token e ID String
+                val response = RetrofitClient.api.deletePokemon("Bearer $token", pokemonId.toString())
+                
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesActivity, "Excluído com sucesso", Toast.LENGTH_SHORT).show()
                     finish()

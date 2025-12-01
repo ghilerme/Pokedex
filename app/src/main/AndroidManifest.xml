@@ -21,6 +21,10 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".DetalhesActivity"
+            android:exported="false"
+            android:parentActivityName=".ListarTodosActivity" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>

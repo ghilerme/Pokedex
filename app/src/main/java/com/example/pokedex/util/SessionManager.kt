@@ -8,14 +8,24 @@ class SessionManager(context: Context) {
 
     companion object {
         const val KEY_USER_LOGIN = "user_login"
+        const val KEY_AUTH_TOKEN = "auth_token" // Nova constante para o token
     }
 
-    fun saveUserSession(login: String) {
-        prefs.edit().putString(KEY_USER_LOGIN, login).apply()
+    // Salvar login e token
+    fun saveUserSession(login: String, token: String) {
+        val editor = prefs.edit()
+        editor.putString(KEY_USER_LOGIN, login)
+        editor.putString(KEY_AUTH_TOKEN, token)
+        editor.apply()
     }
 
     fun getUserLogin(): String? {
         return prefs.getString(KEY_USER_LOGIN, null)
+    }
+
+    // Novo método para recuperar o token
+    fun getToken(): String? {
+        return prefs.getString(KEY_AUTH_TOKEN, null)
     }
 
     fun clearSession() {
