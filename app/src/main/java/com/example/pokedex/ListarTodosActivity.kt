@@ -81,7 +81,6 @@ class ListarTodosActivity : AppCompatActivity() {
         }
     }
 
-    // Atualiza a lista caso o usuário volte de outra tela (ex: editou um pokemon)
     override fun onResume() {
         super.onResume()
         fetchPokemons()
