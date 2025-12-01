@@ -1,15 +1,23 @@
 package com.example.pokedex
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.view.ContextThemeWrapper
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.pokedex.model.DashboardResponse
+import com.example.pokedex.model.DashboardStats
+import com.example.pokedex.network.RetrofitClient
+import kotlinx.coroutines.launch
+
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -24,42 +32,68 @@ class DashboardActivity : AppCompatActivity() {
             insets
         }
 
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenuHamburguer)
+        btnMenu.setOnClickListener { view ->
+            mostrarMenu(view)
+        }
+
         carregarDadosDashboard()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_dashboard, menu)
-        return true
-    }
+    private fun mostrarMenu(view: android.view.View) {
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_cadastrar -> {
-                // Futuro: Intent(this, CadastroActivity::class.java)
-                Toast.makeText(this, "Ir para Cadastro", Toast.LENGTH_SHORT).show()
-                true
+        val contextWrapper = ContextThemeWrapper(this, R.style.TemaWrapperMenu)
+        val popup = PopupMenu(contextWrapper, view)
+
+        popup.menuInflater.inflate(R.menu.menu_dashboard, popup.menu)
+
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_cadastrar -> {
+                    val intent = Intent(this, CadastroActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.action_listar -> {
+                    val intent = Intent(this, ListarTodosActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.action_pesquisar_tipo -> {
+                    val intent = Intent(this, PesquisaActivity::class.java)
+                    intent.putExtra("MODE", "TIPO")
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.action_pesquisar_habilidade -> {
+                    val intent = Intent(this, PesquisaActivity::class.java)
+                    intent.putExtra("MODE", "HABILIDADE")
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.action_sair -> {
+                    finishAffinity()
+                    true
+                }
+
+                else -> false
             }
-            R.id.action_listar -> {
-                // Futuro: Intent(this, ListaActivity::class.java)
-                Toast.makeText(this, "Ir para Lista", Toast.LENGTH_SHORT).show()
-                true
-            }
-            R.id.action_pesquisar_tipo -> {
-                // Futuro: Intent(this, PesquisaTipoActivity::class.java)
-                Toast.makeText(this, "Ir para Pesquisa Tipo", Toast.LENGTH_SHORT).show()
-                true
-            }
-            R.id.action_pesquisar_habilidade -> {
-                // Futuro: Intent(this, PesquisaHabilidadeActivity::class.java)
-                Toast.makeText(this, "Ir para Pesquisa Habilidade", Toast.LENGTH_SHORT).show()
-                true
-            }
-            R.id.action_sair -> {
-                finishAffinity()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
+        try {
+            val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+            fieldMPopup.isAccessible = true
+            val mPopup = fieldMPopup.get(popup)
+            mPopup.javaClass.getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                .invoke(mPopup, true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        popup.show()
     }
 
     private fun carregarDadosDashboard() {
@@ -67,14 +101,52 @@ class DashboardActivity : AppCompatActivity() {
         val tvTopTipos = findViewById<TextView>(R.id.tvTopTipos)
         val tvTopHabilidades = findViewById<TextView>(R.id.tvTopHabilidades)
 
-        // --- SIMULAÇÃO DA API ---
-        // Futuramente, aqui entrará o código do Retrofit para buscar do servidor.
-        // Por enquanto, colocamos dados fixos para testar o layout.
+        val prefs = getSharedPreferences("app_pokedex", MODE_PRIVATE)
+        val token = prefs.getString("TOKEN_JWT", null)
 
-        tvTotal.text = "15" // Exemplo: 15 cadastrados
+        if (token == null) {
+            Toast.makeText(this, "Você precisa logar para ver dados reais!", Toast.LENGTH_LONG)
+                .show()
+            tvTotal.text = "0"
+            tvTopTipos.text = "Sem conexão"
+            tvTopHabilidades.text = "Sem conexão"
+            return
+        }
 
-        tvTopTipos.text = "1. Fogo\n2. Água\n3. Elétrico"
+        // 2. Conectar com a API
+        lifecycleScope.launch {
+            try {
+                // Chama a API passando o token no cabeçalho
+                val response = RetrofitClient.api.getDashboardStats("Bearer $token")
 
-        tvTopHabilidades.text = "1. Overgrow\n2. Blaze\n3. Static"
+                if (response.isSuccessful) {
+                    val dashboardResponse = response.body()
+
+                    if (dashboardResponse != null && dashboardResponse.success) {
+                        val stats = dashboardResponse.stats
+
+                        tvTotal.text = stats.total.toString()
+
+                        tvTopTipos.text = stats.topTypes.mapIndexed { index, item ->
+                            "${index + 1}. ${item.name}: ${item.count}"
+                        }.joinToString("\n")
+
+                        tvTopHabilidades.text = stats.topAbilities.mapIndexed { index, item ->
+                            "${index + 1}. ${item.name}: ${item.count}"
+                        }.joinToString("\n")
+
+                    }
+                } else {
+                    Toast.makeText(
+                        this@DashboardActivity,
+                        "Erro: ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this@DashboardActivity, "Erro de Conexão", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

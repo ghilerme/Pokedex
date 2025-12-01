@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:fillViewport="true">
+    tools:context=".DashboardActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp"
-        tools:context=".DashboardActivity">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingTop="50dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="@font/pokemon"
-            android:gravity="center"
-            android:text="DASHBOARD"
-            android:textColor="#FFFFFF"
-            android:textSize="32sp" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/pokemon_red"
-            android:padding="2dp"
-            android:layout_marginBottom="12dp">
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/pokemon"
+                android:gravity="center"
+                android:text="DASHBOARD"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#111111"
-                android:padding="12dp">
+                android:background="@drawable/borda_pokemon_redonda"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -54,23 +54,14 @@
                     android:textSize="28sp"
                     android:fontFamily="@font/pokemon"/>
             </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/pokemon_red"
-            android:padding="2dp"
-            android:layout_marginBottom="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#111111"
-                android:padding="12dp">
+                android:background="@drawable/borda_pokemon_redonda"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -90,23 +81,14 @@
                     android:layout_marginTop="6dp"
                     android:fontFamily="@font/pokemon"/>
             </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/pokemon_red"
-            android:padding="2dp"
-            android:layout_marginBottom="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/pokemon"
                 android:orientation="vertical"
-                android:background="#111111"
-                android:padding="12dp">
+                android:background="@drawable/borda_pokemon_redonda"
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -127,6 +109,19 @@
                     android:fontFamily="@font/pokemon"/>
             </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-</ScrollView>
+    <ImageButton
+        android:id="@+id/btnMenuHamburguer"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Menu"
+        android:src="@drawable/ic_menu_hamburguer"
+        android:scaleType="centerInside" />
+
+</RelativeLayout>

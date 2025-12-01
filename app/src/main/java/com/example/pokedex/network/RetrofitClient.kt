@@ -3,9 +3,8 @@ package com.example.pokedex.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "https://pokedex-api-9u29.onrender.com/"
 
     val api: PokemonApiService by lazy {
         Retrofit.Builder()
