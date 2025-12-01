@@ -1,7 +1,7 @@
 package com.example.pokedex.model
 
 data class DashboardStats(
-    val totalPokemons: Int,
-    val topTipos: List<String>,
-    val topHabilidades: List<String>
+    val total: Int,
+    val topTypes: List<TopItem>,
+    val topAbilities: List<TopItem>
 )

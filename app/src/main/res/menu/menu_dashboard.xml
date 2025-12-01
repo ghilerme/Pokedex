@@ -5,25 +5,30 @@
     <item
         android:id="@+id/action_cadastrar"
         android:title="Cadastrar Pokémon"
+        android:icon="@drawable/ic_add"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_listar"
         android:title="Listar Todos"
+        android:icon="@drawable/ic_list"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_pesquisar_tipo"
         android:title="Pesquisar por Tipo"
+        android:icon="@drawable/ic_filter"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_pesquisar_habilidade"
         android:title="Pesquisar por Habilidade"
+        android:icon="@drawable/ic_skill"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_sair"
         android:title="Sair"
+        android:icon="@drawable/ic_exit"
         app:showAsAction="never" />
 </menu>

@@ -1,34 +1,59 @@
 package com.example.pokedex.network
 
+import com.example.pokedex.model.DashboardResponse
+import com.example.pokedex.model.LoginResponse
+import com.example.pokedex.model.Pokemon
+import com.example.pokedex.model.PokemonListResponse
 import retrofit2.Response
 import retrofit2.http.*
-import com.example.pokedex.model.DashboardStats
-import com.example.pokedex.model.Pokemon
 
 interface PokemonApiService {
 
-    @POST("auth/login")
-    suspend fun login(@Body loginData: Map<String, String>): Response<Void>
+    // --- AUTENTICAÇÃO ---
+    // Agora retorna LoginResponse, facilitando pegar o token: response.body()?.token
+    @POST("login")
+    suspend fun login(@Body loginData: Map<String, String>): Response<LoginResponse>
 
-    @GET("dashboard")
-    suspend fun getDashboardStats(): Response<DashboardStats>
+    // --- DASHBOARD ---
+    @GET("pokemon/dashboard")
+    suspend fun getDashboardStats(
+        @Header("Authorization") token: String
+    ): Response<DashboardResponse>
 
-    @GET("pokemons")
-    suspend fun getPokemons(): Response<List<Pokemon>>
+    // --- LISTAGEM ---
+    // Substituído Map<String, Any> por PokemonListResponse
+    @GET("pokemon")
+    suspend fun getPokemons(
+        @Header("Authorization") token: String
+    ): Response<PokemonListResponse>
 
-
-    @GET("pokemons/search")
+    // --- PESQUISA ---
+    // A rota é a mesma da listagem, mas com query params [cite: 116, 117]
+    // O retorno é o mesmo da listagem (PokemonListResponse)
+    @GET("pokemon")
     suspend fun searchPokemons(
-        @Query("term") term: String,   // O termo digitado
-        @Query("type") type: String    // "tipo" ou "habilidade"
-    ): Response<List<Pokemon>>
+        @Header("Authorization") token: String,
+        @Query("type") type: String?,
+        @Query("ability") ability: String?
+    ): Response<PokemonListResponse>
 
-    @POST("pokemons")
-    suspend fun createPokemon(@Body pokemon: Pokemon): Response<Void>
+    // --- CADASTRO/EDIÇÃO ---
+    @POST("pokemon")
+    suspend fun createPokemon(
+        @Header("Authorization") token: String,
+        @Body pokemon: Pokemon
+    ): Response<Void> // Pode manter Void se não for usar o objeto retornado
 
-    @PUT("pokemons/{id}")
-    suspend fun updatePokemon(@Path("id") id: Int, @Body pokemon: Pokemon): Response<Void>
+    @PUT("pokemon/{id}")
+    suspend fun updatePokemon(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body pokemon: Pokemon
+    ): Response<Void>
 
-    @DELETE("pokemons/{id}")
-    suspend fun deletePokemon(@Path("id") id: Int): Response<Void>
+    @DELETE("pokemon/{id}")
+    suspend fun deletePokemon(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): Response<Void>
 }
