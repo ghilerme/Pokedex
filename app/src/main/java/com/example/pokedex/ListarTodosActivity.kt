@@ -43,14 +43,14 @@ class ListarTodosActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         rvPokemons.layoutManager = LinearLayoutManager(this)
 
-        // Configura o Adapter com a lógica de clique para navegação
         adapter = PokemonAdapter(emptyList()) { pokemon ->
             val intent = Intent(this, DetalhesActivity::class.java)
-            // Passa todos os dados para a tela de detalhes para evitar nova chamada de API
-            intent.putExtra("POKEMON_ID", pokemon.id)
+            
+            intent.putExtra("POKEMON_ID", pokemon.id) // Agora passa String
             intent.putExtra("POKEMON_NOME", pokemon.nome)
             intent.putExtra("POKEMON_TIPO", pokemon.tipo)
-            intent.putExtra("POKEMON_HABILIDADES", pokemon.habilidades)
+            // [FIX] Passa a lista como ArrayList
+            intent.putStringArrayListExtra("POKEMON_HABILIDADES", ArrayList(pokemon.habilidades))
             intent.putExtra("POKEMON_USUARIO", pokemon.usuario_cadastro)
 
             startActivity(intent)

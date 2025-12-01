@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.adapter.PokemonAdapter
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.network.RetrofitClient
+import com.example.pokedex.util.SessionManager
 import kotlinx.coroutines.launch
 
 class PesquisaActivity : AppCompatActivity() {
@@ -79,6 +80,14 @@ class PesquisaActivity : AppCompatActivity() {
             return
         }
 
+        val sessionManager = SessionManager(this)
+        val token = sessionManager.getToken()
+
+        if (token == null) {
+            Toast.makeText(this, "Não autenticado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         progressBar.visibility = View.VISIBLE
         tvSemResultados.visibility = View.GONE
         rvResultados.visibility = View.GONE
@@ -86,18 +95,22 @@ class PesquisaActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Chama a API passando o termo e o tipo de busca ("tipo" ou "habilidade")
-                // ATENÇÃO: Ajuste os parâmetros conforme seu Backend real
+                // CORREÇÃO: Lógica para enviar o parâmetro correto
+                val typeParam = if (modoPesquisa == "TIPO") termo else null
+                val abilityParam = if (modoPesquisa == "HABILIDADE") termo else null
+
                 val response = RetrofitClient.api.searchPokemons(
-                    term = termo,
-                    type = modoPesquisa.lowercase() // envia "tipo" ou "habilidade"
+                    token = "Bearer $token",
+                    type = typeParam,
+                    ability = abilityParam
                 )
 
                 if (response.isSuccessful && response.body() != null) {
-                    val lista = response.body()!!
+                    val body = response.body()!!
 
-                    if (lista.isNotEmpty()) {
-                        adapter.updateList(lista)
+                    // CORREÇÃO: Acessar a lista dentro do objeto de resposta
+                    if (body.success && body.pokemon.isNotEmpty()) {
+                        adapter.updateList(body.pokemon)
                         rvResultados.visibility = View.VISIBLE
                     } else {
                         tvSemResultados.visibility = View.VISIBLE

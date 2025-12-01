@@ -38,7 +38,7 @@ class DetalhesActivity : AppCompatActivity() {
     private lateinit var btnExcluir: Button
     private lateinit var progressBar: ProgressBar
 
-    private var pokemonId: Int = 0
+    private var pokemonId: String? = null
     private var usuarioOriginal: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,24 +77,22 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     private fun recuperarDadosIntent() {
-        pokemonId = intent.getIntExtra("POKEMON_ID", 0)
+        pokemonId = intent.getStringExtra("POKEMON_ID")
         val nome = intent.getStringExtra("POKEMON_NOME") ?: ""
         val tipo = intent.getStringExtra("POKEMON_TIPO") ?: ""
-        val habilidades = intent.getStringExtra("POKEMON_HABILIDADES") ?: ""
+        val listaHabilidades = intent.getStringArrayListExtra("POKEMON_HABILIDADES") ?: listOf()
         usuarioOriginal = intent.getStringExtra("POKEMON_USUARIO")
 
-        preencherCampos(nome, tipo, habilidades, usuarioOriginal)
+        preencherCampos(nome, tipo, listaHabilidades, usuarioOriginal)
 
         // DEFININDO IMAGEM PADRÃO LOCAL (SEM URL EXTERNA)
         ivPokemon.setImageResource(R.drawable.logo_pokemon)
     }
 
-    private fun preencherCampos(nome: String, tipo: String, habilidades: String, usuario: String?) {
+    private fun preencherCampos(nome: String, tipo: String, listaHabilidades: List<String>, usuario: String?) {
         etNome.setText(nome)
         etTipo.setText(tipo)
         tvUsuarioCriador.text = usuario ?: "Desconhecido"
-
-        val listaHabilidades = habilidades.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
         tilHab1.visibility = View.GONE
         tilHab2.visibility = View.GONE
@@ -141,20 +139,23 @@ class DetalhesActivity : AppCompatActivity() {
             return
         }
 
-        val habilidadesString = novasHabilidades.joinToString(", ")
+        if (pokemonId == null) {
+            Toast.makeText(this, "ID do Pokémon não encontrado.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Cria o objeto para envio
         val pokemonAtualizado = Pokemon(
             id = pokemonId,
             nome = nome,
             tipo = tipo,
-            habilidades = habilidadesString,
+            habilidades = novasHabilidades,
             usuario_cadastro = usuarioOriginal
         )
 
         val sessionManager = SessionManager(this)
         val token = sessionManager.getToken()
-        
+
         if (token == null) {
             Toast.makeText(this, "Erro de autenticação", Toast.LENGTH_SHORT).show()
             return
@@ -165,13 +166,12 @@ class DetalhesActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // CORREÇÃO: Passando Token e convertendo ID para String
                 val response = RetrofitClient.api.updatePokemon(
-                    "Bearer $token", 
-                    pokemonId.toString(), 
+                    "Bearer $token",
+                    pokemonId!!,
                     pokemonAtualizado
                 )
-                
+
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesActivity, "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
                     finish()
@@ -197,7 +197,11 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     private fun deletarPokemon() {
-        // Mesma lógica para o delete
+        if (pokemonId == null) {
+            Toast.makeText(this, "ID do Pokémon não encontrado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val sessionManager = SessionManager(this)
         val token = sessionManager.getToken()
 
@@ -211,9 +215,8 @@ class DetalhesActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // CORREÇÃO: Passando Token e ID String
-                val response = RetrofitClient.api.deletePokemon("Bearer $token", pokemonId.toString())
-                
+                val response = RetrofitClient.api.deletePokemon("Bearer $token", pokemonId!!)
+
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesActivity, "Excluído com sucesso", Toast.LENGTH_SHORT).show()
                     finish()

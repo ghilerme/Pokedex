@@ -44,7 +44,6 @@ class CadastroActivity : AppCompatActivity() {
         val hab2 = etHab2.text.toString().trim()
         val hab3 = etHab3.text.toString().trim()
 
-        // 1. Validações Básicas (Front-end)
         if (nome.isEmpty()) {
             etNome.error = "Nome é obrigatório"
             return
@@ -63,21 +62,19 @@ class CadastroActivity : AppCompatActivity() {
         if (hab2.isNotEmpty()) listaHabilidades.add(hab2)
         if (hab3.isNotEmpty()) listaHabilidades.add(hab3)
 
-        val habilidadesString = listaHabilidades.joinToString(", ")
-
         val sessionManager = SessionManager(this)
         val usuarioLogado = sessionManager.getUserLogin()
 
         if (usuarioLogado == null) {
             Toast.makeText(this, "Erro: Usuário não logado", Toast.LENGTH_SHORT).show()
-            finish() // Encerra se não tiver sessão
+            finish()
             return
         }
 
         val novoPokemon = Pokemon(
             nome = nome,
             tipo = tipo,
-            habilidades = habilidadesString,
+            habilidades = listaHabilidades,
             usuario_cadastro = usuarioLogado
         )
 
@@ -87,8 +84,8 @@ class CadastroActivity : AppCompatActivity() {
     private fun enviarCadastro(pokemon: Pokemon) {
         btnCadastrar.isEnabled = false
 
-        val prefs = getSharedPreferences("app_pokedex", MODE_PRIVATE)
-        val token = prefs.getString("TOKEN_JWT", null)
+        val sessionManager = SessionManager(this)
+        val token = sessionManager.getToken()
 
         if (token == null) {
             Toast.makeText(this, "Erro: Você não está logado.", Toast.LENGTH_SHORT).show()

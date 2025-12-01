@@ -56,12 +56,22 @@ class LoginActivity : AppCompatActivity() {
 
                 val response = RetrofitClient.api.login(dadosLogin)
 
+                // Verifica se a requisição foi bem sucedida HTTP 200-299
                 if (response.isSuccessful) {
-                    sessionManager.saveUserSession(login)
+                    val loginResponse = response.body()
 
-                    val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    // Verifica se o corpo não é nulo e se tem o token
+                    if (loginResponse != null && loginResponse.success && !loginResponse.token.isNullOrEmpty()) {
+
+                        // CORREÇÃO: Passando o Login E o Token recuperado da API
+                        sessionManager.saveUserSession(login, loginResponse.token)
+
+                        val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        mostrarAlertaErro("Falha no login: Token não recebido")
+                    }
                 } else {
                     mostrarAlertaErro("Login ou Senha incorretos")
                 }
