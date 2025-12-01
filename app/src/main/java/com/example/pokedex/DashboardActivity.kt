@@ -17,11 +17,17 @@ import com.example.pokedex.model.DashboardResponse
 import com.example.pokedex.model.DashboardStats
 import com.example.pokedex.network.RetrofitClient
 import kotlinx.coroutines.launch
+import com.example.pokedex.util.SessionManager
 
 
 class DashboardActivity : AppCompatActivity() {
 
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        sessionManager = SessionManager(this)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dashboard)
@@ -101,8 +107,8 @@ class DashboardActivity : AppCompatActivity() {
         val tvTopTipos = findViewById<TextView>(R.id.tvTopTipos)
         val tvTopHabilidades = findViewById<TextView>(R.id.tvTopHabilidades)
 
-        val prefs = getSharedPreferences("app_pokedex", MODE_PRIVATE)
-        val token = prefs.getString("TOKEN_JWT", null)
+        val sessionManager = com.example.pokedex.util.SessionManager(this)
+        val token = sessionManager.getToken()
 
         if (token == null) {
             Toast.makeText(this, "Você precisa logar para ver dados reais!", Toast.LENGTH_LONG)
@@ -116,7 +122,6 @@ class DashboardActivity : AppCompatActivity() {
         // 2. Conectar com a API
         lifecycleScope.launch {
             try {
-                // Chama a API passando o token no cabeçalho
                 val response = RetrofitClient.api.getDashboardStats("Bearer $token")
 
                 if (response.isSuccessful) {
