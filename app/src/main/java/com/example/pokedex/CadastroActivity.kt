@@ -102,6 +102,7 @@ class CadastroActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
+                    android.util.Log.e("CADASTRO_ERRO", "Código: ${response.code()}")
                     val errorMsg = if (response.code() == 409) {
                         "Já existe um Pokémon com este nome."
                     } else {
