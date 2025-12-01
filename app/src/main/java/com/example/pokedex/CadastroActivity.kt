@@ -87,23 +87,33 @@ class CadastroActivity : AppCompatActivity() {
     private fun enviarCadastro(pokemon: Pokemon) {
         btnCadastrar.isEnabled = false
 
+        val prefs = getSharedPreferences("app_pokedex", MODE_PRIVATE)
+        val token = prefs.getString("TOKEN_JWT", null)
+
+        if (token == null) {
+            Toast.makeText(this, "Erro: Você não está logado.", Toast.LENGTH_SHORT).show()
+            btnCadastrar.isEnabled = true
+            return
+        }
+
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.api.createPokemon(pokemon)
+                val response = RetrofitClient.api.createPokemon("Bearer $token", pokemon)
 
                 if (response.isSuccessful) {
-                    showDialog("Sucesso", "Pokémon ${pokemon.nome} cadastrado com sucesso!") {
+                    showDialog("Sucesso", "Pokémon cadastrado com sucesso!") {
                         finish()
                     }
                 } else {
                     val errorMsg = if (response.code() == 409) {
                         "Já existe um Pokémon com este nome."
                     } else {
-                        "Erro ao cadastrar. Tente novamente."
+                        "Erro ao cadastrar: ${response.code()}"
                     }
                     showDialog("Erro", errorMsg, null)
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 showDialog("Erro de Conexão", "Não foi possível conectar ao servidor.", null)
             } finally {
                 btnCadastrar.isEnabled = true
