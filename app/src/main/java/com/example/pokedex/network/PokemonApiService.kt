@@ -10,7 +10,7 @@ import retrofit2.http.*
 interface PokemonApiService {
 
     // --- AUTENTICAÇÃO ---
-    // Agora retorna LoginResponse, facilitando pegar o token: response.body()?.token
+
     @POST("login")
     suspend fun login(@Body loginData: Map<String, String>): Response<LoginResponse>
 

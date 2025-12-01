@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val dadosLogin = mapOf("login" to login, "senha" to senha)
+                val dadosLogin = mapOf("login" to login, "password" to senha)
 
                 val response = RetrofitClient.api.login(dadosLogin)
 
