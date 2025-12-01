@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.network.RetrofitClient
 import com.example.pokedex.util.SessionManager
@@ -85,8 +86,21 @@ class DetalhesActivity : AppCompatActivity() {
 
         preencherCampos(nome, tipo, listaHabilidades, usuarioOriginal)
 
-        // DEFININDO IMAGEM PADRÃO LOCAL (SEM URL EXTERNA)
-        ivPokemon.setImageResource(R.drawable.logo_pokemon)
+        // --- CORREÇÃO AQUI ---
+        // Em vez de: ivPokemon.setImageResource(R.drawable.logo_pokemon)
+        // Usamos o Glide com o nome do Pokémon (igual ao Adapter)
+        
+        if (nome.isNotEmpty()) {
+            val imageUrl = "https://img.pokemondb.net/artwork/large/${nome.lowercase()}.jpg"
+
+            Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.logo_pokemon) // Mostra logo enquanto carrega
+                .error(R.drawable.logo_pokemon)       // Mostra logo se der erro
+                .into(ivPokemon)
+        } else {
+            ivPokemon.setImageResource(R.drawable.logo_pokemon)
+        }
     }
 
     private fun preencherCampos(nome: String, tipo: String, listaHabilidades: List<String>, usuario: String?) {
