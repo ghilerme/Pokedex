@@ -15,34 +15,44 @@
         android:theme="@style/Base.Theme.Pokedex">
 
         <activity
-            android:name=".PesquisaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DetalhesActivity"
-            android:exported="false"
-            android:parentActivityName=".ListarTodosActivity" />
-
-        <activity
-            android:name=".ListarTodosActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".CadastroActivity"
-            android:exported="false" />
-    </application>
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ListarTodosActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PesquisaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".DetalhesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+    </application>
 </manifest>

@@ -9,10 +9,12 @@ data class Pokemon(
     val nome: String,
     @SerializedName("type")
     val tipo: String,
+    @SerializedName("description")
+    val descricao: String? = null,
     @SerializedName("abilities")
     val habilidades: List<String>,
     @SerializedName("imageUrl")
-    val urlImagem: String? = null,
+    val imagemUrl: String? = null,
     @SerializedName("createdBy")
     val usuario_cadastro: String? = null
 ) : Serializable
