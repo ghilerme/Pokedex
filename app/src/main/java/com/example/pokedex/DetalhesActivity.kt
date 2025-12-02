@@ -185,8 +185,12 @@ class DetalhesActivity : AppCompatActivity() {
                     Toast.makeText(this@DetalhesActivity, "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    val errorBody = response.errorBody()?.string()
-                    Toast.makeText(this@DetalhesActivity, "Erro ao salvar: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    val errorMsg = if (response.code() == 409) {
+                        "Já existe um Pokémon com este nome."
+                    } else {
+                        "Erro ao salvar: ${response.code()}"
+                    }
+                    Toast.makeText(this@DetalhesActivity, errorMsg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DetalhesActivity, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()

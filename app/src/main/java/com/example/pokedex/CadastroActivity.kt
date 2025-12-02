@@ -61,6 +61,21 @@ class CadastroActivity : AppCompatActivity() {
             return
         }
 
+        // Validação da URL da imagem
+        if (urlImagem.isNotEmpty() &&
+            (!urlImagem.startsWith("http") ||
+            !urlImagem.contains("://") ||
+            !(
+                urlImagem.endsWith(".png", ignoreCase = true) ||
+                urlImagem.endsWith(".jpg", ignoreCase = true) ||
+                urlImagem.endsWith(".jpeg", ignoreCase = true) ||
+                urlImagem.endsWith(".webp", ignoreCase = true)
+            ))
+        ) {
+            etUrlImagem.error = "URL inválida. Use um link direto para a imagem (.png, .jpg, etc.)"
+            return
+        }
+
         val listaHabilidades = mutableListOf<String>()
         listaHabilidades.add(hab1)
         if (hab2.isNotEmpty()) listaHabilidades.add(hab2)
@@ -79,7 +94,7 @@ class CadastroActivity : AppCompatActivity() {
             nome = nome,
             tipo = tipo,
             habilidades = listaHabilidades,
-            imagemUrl = urlImagem, // Adicionado
+            imagemUrl = urlImagem,
             usuario_cadastro = usuarioLogado
         )
 
@@ -103,33 +118,34 @@ class CadastroActivity : AppCompatActivity() {
                 val response = RetrofitClient.api.createPokemon("Bearer $token", pokemon)
 
                 if (response.isSuccessful) {
-                    showDialog("Sucesso", "Pokémon cadastrado com sucesso!") {
-                        finish()
-                    }
+                    showDialog("Sucesso", "Pokémon cadastrado com sucesso!", true)
                 } else {
                     val errorMsg = if (response.code() == 409) {
                         "Já existe um Pokémon com este nome."
                     } else {
                         "Erro ao cadastrar: ${response.code()}"
                     }
-                    showDialog("Erro", errorMsg, null)
+                    showDialog("Erro", errorMsg, false)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                showDialog("Erro de Conexão", "Não foi possível conectar ao servidor.", null)
+                showDialog("Erro de Conexão", "Não foi possível conectar ao servidor.", false)
             } finally {
                 btnCadastrar.isEnabled = true
             }
         }
     }
 
-    private fun showDialog(titulo: String, mensagem: String, onOk: (() -> Unit)?) {
+    private fun showDialog(titulo: String, mensagem: String, finishOnOk: Boolean) {
         AlertDialog.Builder(this)
             .setTitle(titulo)
             .setMessage(mensagem)
             .setPositiveButton("OK") { _, _ ->
-                onOk?.invoke()
+                if (finishOnOk) {
+                    finish()
+                }
             }
+            .setCancelable(false)
             .show()
     }
 }
