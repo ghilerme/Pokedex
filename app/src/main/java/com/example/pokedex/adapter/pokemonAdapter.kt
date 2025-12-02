@@ -33,9 +33,9 @@ class PokemonAdapter(
         holder.tvTipo.text = "Tipo: ${pokemon.tipo}"
 
         // CORREÇÃO: Usando a URL que vem direto da API
-        if (!pokemon.urlImagem.isNullOrEmpty()) {
+        if (!pokemon.imagemUrl.isNullOrEmpty()) {
             Glide.with(holder.itemView.context)
-                .load(pokemon.urlImagem) // Carrega a URL vinda da API
+                .load(pokemon.imagemUrl) // Carrega a URL vinda da API
                 .placeholder(R.drawable.logo_pokemon)
                 .error(R.drawable.logo_pokemon)
                 .into(holder.ivIcon)

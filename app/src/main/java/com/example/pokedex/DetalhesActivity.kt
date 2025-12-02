@@ -153,7 +153,7 @@ class DetalhesActivity : AppCompatActivity() {
             nome = nome,
             tipo = tipo,
             habilidades = novasHabilidades,
-            urlImagem = urlImagem, // <-- Envia a URL (nova ou antiga)
+            imagemUrl = urlImagem, // <-- Envia a URL (nova ou antiga)
             usuario_cadastro = usuarioOriginal
         )
 
