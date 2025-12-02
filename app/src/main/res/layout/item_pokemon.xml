@@ -33,7 +33,6 @@
             android:text="Pikachu"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivPokemonIcon"
             app:layout_constraintTop_toTopOf="parent" />
