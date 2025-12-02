@@ -26,6 +26,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <ImageView
+            android:id="@+id/ivPokemonImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="24dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitulo"
+            android:contentDescription="Imagem do Pokémon" />
+
+        <Button
+            android:id="@+id/btnSelecionarImagem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Selecionar Imagem"
+            android:backgroundTint="#FF0000"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/pokemon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivPokemonImage" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilNome"
             android:layout_width="0dp"
@@ -36,7 +60,7 @@
             app:hintTextColor="#FF0000"
             android:layout_marginTop="24dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:layout_constraintTop_toBottomOf="@id/tvTitulo"
+            app:layout_constraintTop_toBottomOf="@id/btnSelecionarImagem"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

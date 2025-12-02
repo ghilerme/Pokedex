@@ -4,6 +4,8 @@ import com.example.pokedex.model.DashboardResponse
 import com.example.pokedex.model.LoginResponse
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.model.PokemonListResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -21,15 +23,12 @@ interface PokemonApiService {
     ): Response<DashboardResponse>
 
     // --- LISTAGEM ---
-    // Substituído Map<String, Any> por PokemonListResponse
     @GET("pokemon")
     suspend fun getPokemons(
         @Header("Authorization") token: String
     ): Response<PokemonListResponse>
 
     // --- PESQUISA ---
-    // A rota é a mesma da listagem, mas com query params [cite: 116, 117]
-    // O retorno é o mesmo da listagem (PokemonListResponse)
     @GET("pokemon")
     suspend fun searchPokemons(
         @Header("Authorization") token: String,
@@ -38,11 +37,16 @@ interface PokemonApiService {
     ): Response<PokemonListResponse>
 
     // --- CADASTRO/EDIÇÃO ---
+    @Multipart
     @POST("pokemon")
     suspend fun createPokemon(
         @Header("Authorization") token: String,
-        @Body pokemon: Pokemon
-    ): Response<Void> // Pode manter Void se não for usar o objeto retornado
+        @Part("nome") nome: RequestBody,
+        @Part("tipo") tipo: RequestBody,
+        @Part("habilidades") habilidades: RequestBody,
+        @Part("usuario_cadastro") usuario_cadastro: RequestBody,
+        @Part imagem: MultipartBody.Part?
+    ): Response<Void>
 
     @PUT("pokemon/{id}")
     suspend fun updatePokemon(
