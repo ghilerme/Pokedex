@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
     android:fillViewport="true"
+    android:fitsSystemWindows="true"
     tools:context=".DetalhesActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,83 +19,128 @@
             android:id="@+id/tvTituloDetalhes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/pokemon"
-            android:text="Detalhes do Pokémon"
+            android:text="Detalhes"
+            android:textSize="34sp"
             android:textColor="#FFFFFF"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="@font/pokemon"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/ivPokemonDetalhe"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             android:layout_marginTop="24dp"
             android:src="@drawable/logo_pokemon"
-            android:scaleType="centerInside"
+            app:layout_constraintTop_toBottomOf="@id/tvTituloDetalhes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTituloDetalhes" />
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvUsuarioCriador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Criado por: ..."
+            android:textColor="#AAAAAA"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/ivPokemonDetalhe"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilUrlImagemDetalhe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="URL da Imagem"
+            android:textColorHint="#CCCCCC"
+            app:boxStrokeColor="@color/pokemon_red"
+            app:hintTextColor="@color/pokemon_red"
+            android:layout_marginTop="24dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toBottomOf="@id/tvUsuarioCriador"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etUrlImagemDetalhe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:inputType="textUri" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilNomeDetalhe"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:hint="Nome"
             android:textColorHint="#CCCCCC"
-            app:boxStrokeColor="#FF0000"
-            app:hintTextColor="#FF0000"
-            app:layout_constraintBottom_toBottomOf="@id/ivPokemonDetalhe"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ivPokemonDetalhe"
-            app:layout_constraintTop_toTopOf="@id/ivPokemonDetalhe">
+            app:boxStrokeColor="@color/pokemon_red"
+            app:hintTextColor="@color/pokemon_red"
+            android:layout_marginTop="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toBottomOf="@id/tilUrlImagemDetalhe"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNomeDetalhe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:inputType="textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilTipoDetalhe"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:hint="Tipo"
             android:textColorHint="#CCCCCC"
-            app:boxStrokeColor="#FF0000"
-            app:hintTextColor="#FF0000"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:boxStrokeColor="@color/pokemon_red"
+            app:hintTextColor="@color/pokemon_red"
+            android:layout_marginTop="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toBottomOf="@id/tilNomeDetalhe"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivPokemonDetalhe">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTipoDetalhe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:inputType="textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tvHabTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Habilidades"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:fontFamily="@font/pokemon"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@id/tilTipoDetalhe"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilHabDetalhe1"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Habilidade 1"
             android:textColorHint="#CCCCCC"
-            android:visibility="gone"
-            app:boxStrokeColor="#FF0000"
-            app:hintTextColor="#FF0000"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:boxStrokeColor="@color/pokemon_red"
+            app:hintTextColor="@color/pokemon_red"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toBottomOf="@id/tvHabTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilTipoDetalhe"
-            tools:visibility="visible">
-
+            app:layout_constraintEnd_toEndOf="parent">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etHabDetalhe1"
                 android:layout_width="match_parent"
@@ -103,20 +150,17 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilHabDetalhe2"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Habilidade 2"
             android:textColorHint="#CCCCCC"
-            android:visibility="gone"
-            app:boxStrokeColor="#FF0000"
-            app:hintTextColor="#FF0000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:boxStrokeColor="@color/pokemon_red"
+            app:hintTextColor="@color/pokemon_red"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintTop_toBottomOf="@id/tilHabDetalhe1"
-            tools:visibility="visible">
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etHabDetalhe2"
                 android:layout_width="match_parent"
@@ -126,20 +170,17 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilHabDetalhe3"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Habilidade 3"
             android:textColorHint="#CCCCCC"
-            android:visibility="gone"
-            app:boxStrokeColor="#FF0000"
-            app:hintTextColor="#FF0000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:boxStrokeColor="@color/pokemon_red"
+            app:hintTextColor="@color/pokemon_red"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintTop_toBottomOf="@id/tilHabDetalhe2"
-            tools:visibility="visible">
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etHabDetalhe3"
                 android:layout_width="match_parent"
@@ -147,63 +188,42 @@
                 android:textColor="#FFFFFF" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/tvLabelUsuario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Cadastrado por:"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilHabDetalhe3" />
-
-        <TextView
-            android:id="@+id/tvUsuarioCriador"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Usuário"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvLabelUsuario"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tvLabelUsuario" />
-
         <Button
             android:id="@+id/btnSalvar"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="#FF0000"
-            android:fontFamily="@font/pokemon"
+            android:layout_height="60dp"
             android:text="SALVAR"
+            android:textSize="20sp"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toStartOf="@id/btnExcluir"
+            android:fontFamily="@font/pokemon"
+            android:backgroundTint="@color/pokemon_red"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@id/tilHabDetalhe3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvUsuarioCriador" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/btnExcluir"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="#555555"
-            android:fontFamily="@font/pokemon"
+            android:layout_height="60dp"
             android:text="EXCLUIR"
+            android:textSize="18sp"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@id/btnSalvar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnSalvar"
-            app:layout_constraintTop_toTopOf="@id/btnSalvar" />
+            android:fontFamily="@font/pokemon"
+            android:backgroundTint="#333333"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintTop_toBottomOf="@id/btnSalvar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ProgressBar
             android:id="@+id/progressBarDetalhe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminateTint="#FF0000"
             android:visibility="gone"
+            android:indeterminateTint="@color/pokemon_red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

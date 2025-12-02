@@ -1,5 +1,6 @@
 package com.example.pokedex
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class PesquisaActivity : AppCompatActivity() {
 
-    private lateinit var tilSearch: TextInputLayout // <-- Adicionado
+    private lateinit var tilSearch: TextInputLayout
     private lateinit var etSearch: EditText
     private lateinit var btnPesquisar: Button
     private lateinit var rvResultados: RecyclerView
@@ -41,7 +42,7 @@ class PesquisaActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        tilSearch = findViewById(R.id.tilSearch) // <-- Inicializado
+        tilSearch = findViewById(R.id.tilSearch)
         etSearch = findViewById(R.id.etSearch)
         btnPesquisar = findViewById(R.id.btnPesquisar)
         rvResultados = findViewById(R.id.rvResultados)
@@ -51,19 +52,29 @@ class PesquisaActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Configura Título e Hint no TextInputLayout (tilSearch)
+        // CORREÇÃO: Removemos o "Digite aqui".
+        // O hint do layout recebe diretamente o exemplo.
         if (modoPesquisa == "HABILIDADE") {
             tvTitulo.text = "Por Habilidade"
-            tilSearch.hint = "Ex: Voar, Choque..." // <-- Hint correto no layout
+            tilSearch.hint = "Ex: Voar, Choque..."
         } else {
             tvTitulo.text = "Por Tipo"
-            tilSearch.hint = "Ex: Fogo, Água..."   // <-- Hint correto no layout
+            tilSearch.hint = "Ex: Fogo, Água..."
         }
 
         rvResultados.layoutManager = LinearLayoutManager(this)
+
         adapter = PokemonAdapter(emptyList()) { pokemon ->
-            Toast.makeText(this, "Selecionado: ${pokemon.nome}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, DetalhesActivity::class.java)
+            intent.putExtra("POKEMON_ID", pokemon.id)
+            intent.putExtra("POKEMON_NOME", pokemon.nome)
+            intent.putExtra("POKEMON_TIPO", pokemon.tipo)
+            intent.putStringArrayListExtra("POKEMON_HABILIDADES", ArrayList(pokemon.habilidades))
+            intent.putExtra("POKEMON_USUARIO", pokemon.usuario_cadastro)
+            intent.putExtra("POKEMON_URL_IMAGEM", pokemon.urlImagem)
+            startActivity(intent)
         }
+
         rvResultados.adapter = adapter
 
         btnPesquisar.setOnClickListener {
@@ -73,12 +84,12 @@ class PesquisaActivity : AppCompatActivity() {
 
     private fun realizarBusca() {
         val termo = etSearch.text.toString().trim()
+
         if (termo.isEmpty()) {
-            // Define o erro no layout para ficar visualmente correto
-            tilSearch.error = "Digite algo para buscar"
+            tilSearch.error = "Campo obrigatório"
             return
         } else {
-            tilSearch.error = null // Limpa o erro se tiver texto
+            tilSearch.error = null
         }
 
         val sessionManager = SessionManager(this)
@@ -113,9 +124,10 @@ class PesquisaActivity : AppCompatActivity() {
                         rvResultados.visibility = View.VISIBLE
                     } else {
                         tvSemResultados.visibility = View.VISIBLE
+                        tvSemResultados.text = "Nenhum Pokémon encontrado."
                     }
                 } else {
-                    tvSemResultados.text = "Erro no servidor."
+                    tvSemResultados.text = "Erro no servidor: ${response.code()}"
                     tvSemResultados.visibility = View.VISIBLE
                 }
 

@@ -22,14 +22,13 @@ class DetalhesActivity : AppCompatActivity() {
 
     private lateinit var etNome: TextInputEditText
     private lateinit var etTipo: TextInputEditText
+    private lateinit var etUrlImagem: TextInputEditText // <-- Novo campo
     private lateinit var ivPokemon: ImageView
 
-    // Layouts para controlar visibilidade
     private lateinit var tilHab1: TextInputLayout
     private lateinit var tilHab2: TextInputLayout
     private lateinit var tilHab3: TextInputLayout
 
-    // Campos de texto
     private lateinit var etHab1: TextInputEditText
     private lateinit var etHab2: TextInputEditText
     private lateinit var etHab3: TextInputEditText
@@ -48,14 +47,13 @@ class DetalhesActivity : AppCompatActivity() {
 
         initViews()
         setupListeners()
-
-        // RECUPERA OS DADOS ENVIADOS PELA INTENT
         recuperarDadosIntent()
     }
 
     private fun initViews() {
         etNome = findViewById(R.id.etNomeDetalhe)
         etTipo = findViewById(R.id.etTipoDetalhe)
+        etUrlImagem = findViewById(R.id.etUrlImagemDetalhe) // <-- Bind do novo campo
         ivPokemon = findViewById(R.id.ivPokemonDetalhe)
 
         tilHab1 = findViewById(R.id.tilHabDetalhe1)
@@ -81,92 +79,88 @@ class DetalhesActivity : AppCompatActivity() {
         pokemonId = intent.getStringExtra("POKEMON_ID")
         val nome = intent.getStringExtra("POKEMON_NOME") ?: ""
         val tipo = intent.getStringExtra("POKEMON_TIPO") ?: ""
+        val urlImagem = intent.getStringExtra("POKEMON_URL_IMAGEM") ?: "" // <-- Recupera URL
         val listaHabilidades = intent.getStringArrayListExtra("POKEMON_HABILIDADES") ?: listOf()
         usuarioOriginal = intent.getStringExtra("POKEMON_USUARIO")
 
-        preencherCampos(nome, tipo, listaHabilidades, usuarioOriginal)
+        preencherCampos(nome, tipo, urlImagem, listaHabilidades, usuarioOriginal)
 
-        // --- CORREÇÃO AQUI ---
-        // Em vez de: ivPokemon.setImageResource(R.drawable.logo_pokemon)
-        // Usamos o Glide com o nome do Pokémon (igual ao Adapter)
-        
-        if (nome.isNotEmpty()) {
-            val imageUrl = "https://img.pokemondb.net/artwork/large/${nome.lowercase()}.jpg"
-
+        // Carrega a imagem no topo usando a URL recebida
+        if (urlImagem.isNotEmpty()) {
             Glide.with(this)
-                .load(imageUrl)
-                .placeholder(R.drawable.logo_pokemon) // Mostra logo enquanto carrega
-                .error(R.drawable.logo_pokemon)       // Mostra logo se der erro
+                .load(urlImagem)
+                .placeholder(R.drawable.logo_pokemon)
+                .error(R.drawable.logo_pokemon)
                 .into(ivPokemon)
         } else {
+            // Fallback se não tiver URL
             ivPokemon.setImageResource(R.drawable.logo_pokemon)
         }
     }
 
-    private fun preencherCampos(nome: String, tipo: String, listaHabilidades: List<String>, usuario: String?) {
+    private fun preencherCampos(nome: String, tipo: String, urlImagem: String, listaHabilidades: List<String>, usuario: String?) {
         etNome.setText(nome)
         etTipo.setText(tipo)
-        tvUsuarioCriador.text = usuario ?: "Desconhecido"
+        etUrlImagem.setText(urlImagem) // <-- Preenche o campo com a URL atual
+        tvUsuarioCriador.text = "Criado por: ${usuario ?: "Desconhecido"}"
 
-        tilHab1.visibility = View.GONE
-        tilHab2.visibility = View.GONE
-        tilHab3.visibility = View.GONE
+        // Lógica de habilidades (mostra os campos conforme necessário)
+        tilHab1.visibility = View.VISIBLE // Sempre mostra pelo menos 1
+        etHab1.setText(if (listaHabilidades.isNotEmpty()) listaHabilidades[0] else "")
 
-        if (listaHabilidades.isNotEmpty()) {
-            tilHab1.visibility = View.VISIBLE
-            etHab1.setText(listaHabilidades[0])
-        }
+        tilHab2.visibility = View.VISIBLE
+        etHab2.setText(if (listaHabilidades.size >= 2) listaHabilidades[1] else "")
 
-        if (listaHabilidades.size >= 2) {
-            tilHab2.visibility = View.VISIBLE
-            etHab2.setText(listaHabilidades[1])
-        }
-
-        if (listaHabilidades.size >= 3) {
-            tilHab3.visibility = View.VISIBLE
-            etHab3.setText(listaHabilidades[2])
-        }
-
-        if (listaHabilidades.isEmpty()) {
-            tilHab1.visibility = View.VISIBLE
-        }
+        tilHab3.visibility = View.VISIBLE
+        etHab3.setText(if (listaHabilidades.size >= 3) listaHabilidades[2] else "")
     }
 
     private fun atualizarPokemon() {
         val nome = etNome.text.toString().trim()
         val tipo = etTipo.text.toString().trim()
+        val urlImagem = etUrlImagem.text.toString().trim() // <-- Pega o valor do campo (editado ou não)
+
+        // Validações
+        if (nome.isEmpty() || tipo.isEmpty() || urlImagem.isEmpty()) {
+            Toast.makeText(this, "Nome, Tipo e URL da Imagem são obrigatórios", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validação simples de URL
+        if (!urlImagem.startsWith("http")) {
+            Toast.makeText(this, "URL da imagem inválida (deve começar com http)", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val novasHabilidades = mutableListOf<String>()
+        if (!etHab1.text.isNullOrEmpty()) novasHabilidades.add(etHab1.text.toString().trim())
+        if (!etHab2.text.isNullOrEmpty()) novasHabilidades.add(etHab2.text.toString().trim())
+        if (!etHab3.text.isNullOrEmpty()) novasHabilidades.add(etHab3.text.toString().trim())
 
-        if (tilHab1.visibility == View.VISIBLE && !etHab1.text.isNullOrEmpty()) {
-            novasHabilidades.add(etHab1.text.toString().trim())
-        }
-        if (tilHab2.visibility == View.VISIBLE && !etHab2.text.isNullOrEmpty()) {
-            novasHabilidades.add(etHab2.text.toString().trim())
-        }
-        if (tilHab3.visibility == View.VISIBLE && !etHab3.text.isNullOrEmpty()) {
-            novasHabilidades.add(etHab3.text.toString().trim())
-        }
-
-        if (nome.isEmpty() || tipo.isEmpty() || novasHabilidades.isEmpty()) {
-            Toast.makeText(this, "Preencha os campos obrigatórios", Toast.LENGTH_SHORT).show()
+        if (novasHabilidades.isEmpty()) {
+            Toast.makeText(this, "Adicione pelo menos uma habilidade", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (pokemonId == null) {
-            Toast.makeText(this, "ID do Pokémon não encontrado.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Erro: ID do Pokémon perdido", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Cria o objeto para envio
+        // Objeto atualizado
         val pokemonAtualizado = Pokemon(
             id = pokemonId,
             nome = nome,
             tipo = tipo,
             habilidades = novasHabilidades,
+            urlImagem = urlImagem, // <-- Envia a URL (nova ou antiga)
             usuario_cadastro = usuarioOriginal
         )
 
+        enviarAtualizacaoParaAPI(pokemonAtualizado)
+    }
+
+    private fun enviarAtualizacaoParaAPI(pokemon: Pokemon) {
         val sessionManager = SessionManager(this)
         val token = sessionManager.getToken()
 
@@ -180,17 +174,19 @@ class DetalhesActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
+                // Endpoint PUT requer imageUrl no body
                 val response = RetrofitClient.api.updatePokemon(
                     "Bearer $token",
-                    pokemonId!!,
-                    pokemonAtualizado
+                    pokemon.id!!,
+                    pokemon
                 )
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesActivity, "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Toast.makeText(this@DetalhesActivity, "Erro ao salvar", Toast.LENGTH_SHORT).show()
+                    val errorBody = response.errorBody()?.string()
+                    Toast.makeText(this@DetalhesActivity, "Erro ao salvar: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DetalhesActivity, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -211,18 +207,8 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     private fun deletarPokemon() {
-        if (pokemonId == null) {
-            Toast.makeText(this, "ID do Pokémon não encontrado.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val sessionManager = SessionManager(this)
-        val token = sessionManager.getToken()
-
-        if (token == null) {
-            Toast.makeText(this, "Erro de autenticação", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val token = sessionManager.getToken() ?: return
 
         progressBar.visibility = View.VISIBLE
         btnExcluir.isEnabled = false
@@ -230,7 +216,6 @@ class DetalhesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.api.deletePokemon("Bearer $token", pokemonId!!)
-
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesActivity, "Excluído com sucesso", Toast.LENGTH_SHORT).show()
                     finish()
@@ -238,7 +223,7 @@ class DetalhesActivity : AppCompatActivity() {
                     Toast.makeText(this@DetalhesActivity, "Erro ao excluir", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DetalhesActivity, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
             } finally {
                 progressBar.visibility = View.GONE
                 btnExcluir.isEnabled = true
