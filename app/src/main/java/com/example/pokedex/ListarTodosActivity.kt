@@ -49,10 +49,9 @@ class ListarTodosActivity : AppCompatActivity() {
             intent.putExtra("POKEMON_ID", pokemon.id) // Agora passa String
             intent.putExtra("POKEMON_NOME", pokemon.nome)
             intent.putExtra("POKEMON_TIPO", pokemon.tipo)
-            // [FIX] Passa a lista como ArrayList
             intent.putStringArrayListExtra("POKEMON_HABILIDADES", ArrayList(pokemon.habilidades))
             intent.putExtra("POKEMON_USUARIO", pokemon.usuario_cadastro)
-
+            intent.putExtra("POKEMON_URL_IMAGEM", pokemon.urlImagem)
             startActivity(intent)
         }
         rvPokemons.adapter = adapter

@@ -2,11 +2,15 @@
     <style name="Base.Theme.Pokedex" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/pokemon_red</item>
         <item name="colorSecondary">@color/pokemon_red</item>
+
         <item name="android:windowBackground">#000000</item>
         <item name="android:colorBackground">#000000</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textColorPrimary">#FFFFFF</item>
-        <item name="android:fontFamily">@font/pokemon</item> <item name="android:popupMenuStyle">@style/EstiloMenuPokemon</item>
+        <item name="android:fontFamily">@font/pokemon</item>
+
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item> <item name="android:popupMenuStyle">@style/EstiloMenuPokemon</item>
         <item name="popupMenuStyle">@style/EstiloMenuPokemon</item>
     </style>
 

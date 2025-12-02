@@ -9,7 +9,7 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp"
     app:cardBackgroundColor="@android:color/transparent"
-    app:strokeColor="#FF0000"
+    app:strokeColor="@color/pokemon_red"
     app:strokeWidth="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
