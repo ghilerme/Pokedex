@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     android:padding="16dp"
+    android:fitsSystemWindows="true"
     tools:context=".PesquisaActivity">
 
     <TextView
@@ -26,8 +27,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:hint="Digite aqui..."
-        android:textColorHint="#CCCCCC"
         app:boxStrokeColor="#FF0000"
         app:hintTextColor="#FF0000"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

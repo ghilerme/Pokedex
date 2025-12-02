@@ -1,6 +1,5 @@
 package com.example.pokedex
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.ContextThemeWrapper
@@ -13,19 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.pokedex.model.DashboardResponse
-import com.example.pokedex.model.DashboardStats
 import com.example.pokedex.network.RetrofitClient
-import kotlinx.coroutines.launch
 import com.example.pokedex.util.SessionManager
-
+import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         sessionManager = SessionManager(this)
 
         super.onCreate(savedInstanceState)
@@ -43,11 +38,17 @@ class DashboardActivity : AppCompatActivity() {
             mostrarMenu(view)
         }
 
+        // REMOVIDO: carregarDadosDashboard()
+        // O carregamento foi movido para o onResume para atualizar sempre que a tela aparecer.
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Carrega os dados toda vez que a activity volta ao primeiro plano (ex: após um cadastro)
         carregarDadosDashboard()
     }
 
     private fun mostrarMenu(view: android.view.View) {
-
         val contextWrapper = ContextThemeWrapper(this, R.style.TemaWrapperMenu)
         val popup = PopupMenu(contextWrapper, view)
 
@@ -82,6 +83,7 @@ class DashboardActivity : AppCompatActivity() {
                 }
 
                 R.id.action_sair -> {
+                    // Limpa a sessão se necessário ou apenas fecha
                     finishAffinity()
                     true
                 }
@@ -89,6 +91,8 @@ class DashboardActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // Força a exibição de ícones no PopupMenu (hack opcional)
         try {
             val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
             fieldMPopup.isAccessible = true
@@ -107,19 +111,16 @@ class DashboardActivity : AppCompatActivity() {
         val tvTopTipos = findViewById<TextView>(R.id.tvTopTipos)
         val tvTopHabilidades = findViewById<TextView>(R.id.tvTopHabilidades)
 
-        val sessionManager = com.example.pokedex.util.SessionManager(this)
         val token = sessionManager.getToken()
 
         if (token == null) {
-            Toast.makeText(this, "Você precisa logar para ver dados reais!", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(this, "Você precisa logar para ver dados reais!", Toast.LENGTH_LONG).show()
             tvTotal.text = "0"
             tvTopTipos.text = "Sem conexão"
             tvTopHabilidades.text = "Sem conexão"
             return
         }
 
-        // 2. Conectar com a API
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.api.getDashboardStats("Bearer $token")
@@ -139,7 +140,6 @@ class DashboardActivity : AppCompatActivity() {
                         tvTopHabilidades.text = stats.topAbilities.mapIndexed { index, item ->
                             "${index + 1}. ${item.name}: ${item.count}"
                         }.joinToString("\n")
-
                     }
                 } else {
                     Toast.makeText(

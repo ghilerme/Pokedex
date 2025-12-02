@@ -26,29 +26,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivPokemonImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="24dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitulo"
-            android:contentDescription="Imagem do Pokémon" />
-
-        <Button
-            android:id="@+id/btnSelecionarImagem"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilUrlImagem"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Selecionar Imagem"
-            android:backgroundTint="#FF0000"
-            android:textColor="#FFFFFF"
-            android:fontFamily="@font/pokemon"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="URL da Imagem (https://...)"
+            android:textColorHint="#CCCCCC"
+            app:boxStrokeColor="#FF0000"
+            app:hintTextColor="#FF0000"
+            android:layout_marginTop="24dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toBottomOf="@id/tvTitulo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivPokemonImage" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etUrlImagem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:inputType="textUri" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilNome"
@@ -58,9 +56,9 @@
             android:textColorHint="#CCCCCC"
             app:boxStrokeColor="#FF0000"
             app:hintTextColor="#FF0000"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:layout_constraintTop_toBottomOf="@id/btnSelecionarImagem"
+            app:layout_constraintTop_toBottomOf="@id/tilUrlImagem"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

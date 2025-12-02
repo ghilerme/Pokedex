@@ -12,13 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.adapter.PokemonAdapter
-import com.example.pokedex.model.Pokemon
 import com.example.pokedex.network.RetrofitClient
 import com.example.pokedex.util.SessionManager
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
 class PesquisaActivity : AppCompatActivity() {
 
+    private lateinit var tilSearch: TextInputLayout // <-- Adicionado
     private lateinit var etSearch: EditText
     private lateinit var btnPesquisar: Button
     private lateinit var rvResultados: RecyclerView
@@ -27,13 +28,12 @@ class PesquisaActivity : AppCompatActivity() {
     private lateinit var tvTitulo: TextView
 
     private lateinit var adapter: PokemonAdapter
-    private var modoPesquisa: String = "TIPO" // Pode ser "TIPO" ou "HABILIDADE"
+    private var modoPesquisa: String = "TIPO"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pesquisa)
 
-        // 1. Receber o modo via Intent (vindo do Dashboard)
         modoPesquisa = intent.getStringExtra("MODE") ?: "TIPO"
 
         initViews()
@@ -41,6 +41,7 @@ class PesquisaActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        tilSearch = findViewById(R.id.tilSearch) // <-- Inicializado
         etSearch = findViewById(R.id.etSearch)
         btnPesquisar = findViewById(R.id.btnPesquisar)
         rvResultados = findViewById(R.id.rvResultados)
@@ -50,24 +51,21 @@ class PesquisaActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Configura Título e Hint baseados no modo
+        // Configura Título e Hint no TextInputLayout (tilSearch)
         if (modoPesquisa == "HABILIDADE") {
             tvTitulo.text = "Por Habilidade"
-            etSearch.hint = "Ex: Voar, Choque..."
+            tilSearch.hint = "Ex: Voar, Choque..." // <-- Hint correto no layout
         } else {
             tvTitulo.text = "Por Tipo"
-            etSearch.hint = "Ex: Fogo, Água..."
+            tilSearch.hint = "Ex: Fogo, Água..."   // <-- Hint correto no layout
         }
 
-        // Configura RecyclerView
         rvResultados.layoutManager = LinearLayoutManager(this)
         adapter = PokemonAdapter(emptyList()) { pokemon ->
-            // Clique no item (Futuramente leva para Detalhes)
             Toast.makeText(this, "Selecionado: ${pokemon.nome}", Toast.LENGTH_SHORT).show()
         }
         rvResultados.adapter = adapter
 
-        // Botão de Pesquisa
         btnPesquisar.setOnClickListener {
             realizarBusca()
         }
@@ -76,8 +74,11 @@ class PesquisaActivity : AppCompatActivity() {
     private fun realizarBusca() {
         val termo = etSearch.text.toString().trim()
         if (termo.isEmpty()) {
-            etSearch.error = "Digite algo para buscar"
+            // Define o erro no layout para ficar visualmente correto
+            tilSearch.error = "Digite algo para buscar"
             return
+        } else {
+            tilSearch.error = null // Limpa o erro se tiver texto
         }
 
         val sessionManager = SessionManager(this)
@@ -95,7 +96,6 @@ class PesquisaActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // CORREÇÃO: Lógica para enviar o parâmetro correto
                 val typeParam = if (modoPesquisa == "TIPO") termo else null
                 val abilityParam = if (modoPesquisa == "HABILIDADE") termo else null
 
@@ -108,7 +108,6 @@ class PesquisaActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
 
-                    // CORREÇÃO: Acessar a lista dentro do objeto de resposta
                     if (body.success && body.pokemon.isNotEmpty()) {
                         adapter.updateList(body.pokemon)
                         rvResultados.visibility = View.VISIBLE

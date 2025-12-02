@@ -37,15 +37,11 @@ interface PokemonApiService {
     ): Response<PokemonListResponse>
 
     // --- CADASTRO/EDIÇÃO ---
-    @Multipart
+
     @POST("pokemon")
     suspend fun createPokemon(
         @Header("Authorization") token: String,
-        @Part("nome") nome: RequestBody,
-        @Part("tipo") tipo: RequestBody,
-        @Part("habilidades") habilidades: RequestBody,
-        @Part("usuario_cadastro") usuario_cadastro: RequestBody,
-        @Part imagem: MultipartBody.Part?
+        @Body pokemon: Pokemon
     ): Response<Void>
 
     @PUT("pokemon/{id}")
